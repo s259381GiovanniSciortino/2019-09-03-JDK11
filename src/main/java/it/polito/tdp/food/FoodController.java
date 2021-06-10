@@ -40,29 +40,51 @@ public class FoodController {
     private Button btnCammino; // Value injected by FXMLLoader
 
     @FXML // fx:id="boxPorzioni"
-    private ComboBox<?> boxPorzioni; // Value injected by FXMLLoader
+    private ComboBox<String> boxPorzioni; // Value injected by FXMLLoader
 
     @FXML // fx:id="txtResult"
     private TextArea txtResult; // Value injected by FXMLLoader
 
     @FXML
     void doCammino(ActionEvent event) {
-    	txtResult.clear();
-    	txtResult.appendText("Cerco cammino peso massimo...");
+    	int n;
+    	try {
+    		n = Integer.parseInt(txtPassi.getText());
+    	}catch(NumberFormatException ex) {
+    		txtResult.appendText("Errore, inserisci il numero di passi massimo\n");
+    		return;
+    		}
+    	if(boxPorzioni==null) {
+    		txtResult.appendText("Seleziona un tipo di porzione");
+    		return;
+    	}
+    	String msg = model.doCammino(n, boxPorzioni.getValue());
+    	txtResult.appendText(msg);
     }
 
     @FXML
     void doCorrelate(ActionEvent event) {
-    	txtResult.clear();
-    	txtResult.appendText("Cerco porzioni correlate...");
-    	
+    	if(boxPorzioni==null) {
+    		txtResult.appendText("Seleziona un tipo di porzione");
+    		return;
+    	}
+    	String msg = model.doCorrelate(boxPorzioni.getValue());
+    	txtResult.appendText(msg);
     }
 
     @FXML
     void doCreaGrafo(ActionEvent event) {
-    	txtResult.clear();
-    	txtResult.appendText("Creazione grafo...");
-    	
+    	double n;
+    	try {
+    		n = Double.parseDouble(txtCalorie.getText());
+    	}catch(NumberFormatException ex) {
+    		txtResult.appendText("Errore, inserisci il numero di calorie massimo\n");
+    		return;
+    		}
+    	String msg = model.doCreaGrafo(n);
+    	txtResult.appendText(msg);
+    	boxPorzioni.getItems().clear();
+    	boxPorzioni.getItems().addAll(model.getVertici());
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
